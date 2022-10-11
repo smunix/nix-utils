@@ -7,14 +7,16 @@
       composeThen = f: g: x: f (g (x));
       composeMany = foldr composeThen (x: x);
 
-      haskellSharedLibExe = h: rec {
-        __functor = self: sharedLibExe;
-        sharedLibExe =
-          composeMany [
-            h.lib.enableSharedExecutables
-            h.lib.enableSharedLibraries
-          ];
-      };
+      haskellSharedLibExe = pkgs:
+        with pkgs.haskell.lib;
+        rec {
+          __functor = self: sharedLibExe;
+          sharedLibExe =
+            composeMany [
+              enableSharedExecutables
+              enableSharedLibraries
+            ];
+        };
       overlays = {
         default = _: _: {
           inherit haskellSharedLibExe;
