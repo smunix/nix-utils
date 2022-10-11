@@ -15,6 +15,8 @@
             composeMany [
               enableSharedExecutables
               enableSharedLibraries
+              disableStaticLibraries
+              disableLibraryProfiling
             ];
         };
       overlays = {
