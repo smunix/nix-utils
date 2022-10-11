@@ -3,17 +3,16 @@
 
   outputs = { self, nixpkgs, ... }@inputs:
     with nixpkgs.lib;
-    with (import nixpkgs {}).haskell.lib;
     let
       composeThen = f: g: x: f (g (x));
       composeMany = foldr composeThen (x: x);
 
-      haskellSharedLibExe = rec {
+      haskellSharedLibExe = h: rec {
         __functor = self: sharedLibExe;
         sharedLibExe =
           composeMany [
-            enableSharedExecutables
-            enableSharedLibraries
+            h.lib.enableSharedExecutables
+            h.lib.enableSharedLibraries
           ];
       };
       overlays = {
