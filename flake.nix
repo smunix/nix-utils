@@ -23,7 +23,7 @@
       mkCabal = { packages, ghcVersion ? 924, mkVersion ? (v: v) }:
         { name, source, exclude ? [ ("Setup.hs") ("stack.yaml") ]
         , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ]
-        , haskellPackages ?
+        , overrideAttrs ? { }, haskellPackages ?
           packages.haskell.packages."ghc${toString ghcVersion}" }:
         with packages.lib;
         with packages.haskell.lib;
@@ -34,9 +34,10 @@
               (filter {
                 root = source;
                 inherit exclude;
-              }) dependencies).overrideAttrs
-              (old: { version = mkVersion "${old.version}"; }))))))
-          configureFlags) extraLibraries;
+              }) dependencies).overrideAttrs (old:
+                {
+                  version = mkVersion "${old.version}";
+                } // overrideAttrs)))))) configureFlags) extraLibraries;
 
       overlays = { default = _: _: { inherit haskellSharedLibExe mkCabal; }; };
       lib = rec {
