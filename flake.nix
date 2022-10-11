@@ -3,7 +3,7 @@
 
   outputs = { self, nixpkgs, ... }@inputs:
     with nixpkgs.lib;
-    with nixpkgs.haskell.lib;
+    with (import nixpkgs {}).haskell.lib;
     let
       composeThen = f: g: x: f (g (x));
       composeMany = foldr composeThen (x: x);
