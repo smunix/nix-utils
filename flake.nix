@@ -27,7 +27,7 @@
             (doSharedExecutables ((haskellPackages.callCabal2nix name
               (filter {
                 root = source;
-                exclude = excludeFiles ++ (map matchExt excludeExtensions);
+                exclude = (map matchName excludeFiles) ++ (map matchExt excludeExtensions);
               }) dependencies).overrideAttrs (old:
                 {
                   version = mkVersion "${old.version}";
