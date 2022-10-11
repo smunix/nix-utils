@@ -10,7 +10,8 @@
       manyEndo = foldr thenEndo (x: x);
 
       mkCabal = { packages, ghcVersion ? 924, mkVersion ? (x: x) }:
-        { name, source, exclude ? [ ("Setup.hs") ("stack.yaml") ]
+        { name, source, excludeFiles ? [ ("Setup.hs") ("stack.yaml") ]
+        , excludeExtensions ? []
         , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ]
         , doLibraryProfiling ? packages.haskell.lib.disableLibraryProfiling
         , doSharedExecutables ? packages.haskell.lib.enableSharedExecutables
@@ -26,7 +27,7 @@
             (doSharedExecutables ((haskellPackages.callCabal2nix name
               (filter {
                 root = source;
-                inherit exclude;
+                exclude = excludeFiles ++ (map matchExt excludeExtensions);
               }) dependencies).overrideAttrs (old:
                 {
                   version = mkVersion "${old.version}";
