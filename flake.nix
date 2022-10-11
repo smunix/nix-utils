@@ -6,32 +6,24 @@
   outputs = { self, nixpkgs, nix-filter, ... }@inputs:
     with nixpkgs.lib;
     let
-      composeThen = f: g: x: f (g (x));
-      composeMany = foldr composeThen (x: x);
-
-      haskellSharedLibExe = pkgs:
-        with pkgs.haskell.lib; rec {
-          __functor = self: sharedLibExe;
-          sharedLibExe = composeMany [
-            enableSharedExecutables
-            enableSharedLibraries
-            disableStaticLibraries
-            disableLibraryProfiling
-          ];
-        };
+      thenEndo = f: g: x: f (g (x));
+      manyEndo = foldr thenEndo (x: x);
 
       mkCabal = { packages, ghcVersion ? 924, mkVersion ? (x: x) }:
         { name, source, exclude ? [ ("Setup.hs") ("stack.yaml") ]
         , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ]
         , doLibraryProfiling ? packages.haskell.lib.disableLibraryProfiling
+        , doSharedExecutables ? packages.haskell.lib.enableSharedExecutables
+        , doSharedLibraries ? packages.haskell.lib.enableSharedLibraries
+        , doStaticLibraries ? packages.haskell.lib.disableStaticLibraries
         , overrideAttrs ? (x: x), haskellPackages ?
           packages.haskell.packages."ghc${toString ghcVersion}" }:
         with packages.lib;
         with packages.haskell.lib;
         with nix-filter.lib;
         addExtraLibraries (appendConfigureFlags (doLibraryProfiling
-          (disableStaticLibraries (enableSharedLibraries
-            (enableSharedExecutables ((haskellPackages.callCabal2nix name
+          (doStaticLibraries (doSharedLibraries
+            (doSharedExecutables ((haskellPackages.callCabal2nix name
               (filter {
                 root = source;
                 inherit exclude;
@@ -40,10 +32,7 @@
                   version = mkVersion "${old.version}";
                 } // (overrideAttrs old))))))) configureFlags) extraLibraries;
 
-      overlays = { default = _: _: { inherit haskellSharedLibExe mkCabal; }; };
-      lib = rec {
-        __functor = self: haskellSharedLibExe;
-        inherit haskellSharedLibExe mkCabal;
-      };
+      overlays = { default = _: _: { inherit thenEndo manyEndo mkCabal; }; };
+      lib = { inherit thenEndo manyEndo mkCabal; };
     in { inherit overlays lib; };
 }
