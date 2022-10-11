@@ -33,9 +33,9 @@
             exclude = (map matchName excludeFiles)
               ++ (map matchExt excludeExtensions);
           }) dependencies).overrideAttrs (old:
-            {
+            (overrideAttrs old) // {
               version = mkVersion "${old.version}";
-            } // (overrideAttrs old))) configureFlags) extraLibraries);
+            })) configureFlags) extraLibraries);
 
       overlays = { default = _: _: { inherit thenEndo manyEndo mkCabal; }; };
       lib = { inherit thenEndo manyEndo mkCabal; };
