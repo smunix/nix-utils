@@ -35,7 +35,7 @@
                 root = source;
                 inherit exclude;
               }) dependencies).overrideAttrs
-              (old: { version = "${old.version}-${version}"; }))))))
+              (old: { version = "${old.version}${version}"; }))))))
           configureFlags) extraLibraries;
 
       overlays = { default = _: _: { inherit haskellSharedLibExe mkCabal; }; };
