@@ -23,12 +23,13 @@
       mkCabal = { packages, ghcVersion ? 924, mkVersion ? (x: x) }:
         { name, source, exclude ? [ ("Setup.hs") ("stack.yaml") ]
         , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ]
+        , doLibraryProfiling ? packages.haskell.lib.disableLibraryProfiling
         , overrideAttrs ? (x: x), haskellPackages ?
           packages.haskell.packages."ghc${toString ghcVersion}" }:
         with packages.lib;
         with packages.haskell.lib;
         with nix-filter.lib;
-        addExtraLibraries (appendConfigureFlags (disableLibraryProfiling
+        addExtraLibraries (appendConfigureFlags (doLibraryProfiling
           (disableStaticLibraries (enableSharedLibraries
             (enableSharedExecutables ((haskellPackages.callCabal2nix name
               (filter {
