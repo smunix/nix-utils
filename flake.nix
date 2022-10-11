@@ -11,8 +11,8 @@
 
       mkCabal = { packages, ghcVersion ? 924, mkVersion ? (x: x) }:
         { name, source, excludeFiles ? [ ("Setup.hs") ("stack.yaml") ]
-        , excludeExtensions ? []
-        , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ]
+        , excludeExtensions ? [ ], dependencies ? { }, configureFlags ? [ ]
+        , extraLibraries ? [ ]
         , doLibraryProfiling ? packages.haskell.lib.disableLibraryProfiling
         , doSharedExecutables ? packages.haskell.lib.enableSharedExecutables
         , doSharedLibraries ? packages.haskell.lib.enableSharedLibraries
@@ -22,16 +22,20 @@
         with packages.lib;
         with packages.haskell.lib;
         with nix-filter.lib;
-        addExtraLibraries (appendConfigureFlags (doLibraryProfiling
-          (doStaticLibraries (doSharedLibraries
-            (doSharedExecutables ((haskellPackages.callCabal2nix name
-              (filter {
-                root = source;
-                exclude = (map matchName excludeFiles) ++ (map matchExt excludeExtensions);
-              }) dependencies).overrideAttrs (old:
-                {
-                  version = mkVersion "${old.version}";
-                } // (overrideAttrs old))))))) configureFlags) extraLibraries;
+        manyEndo [
+          doLibraryProfiling
+          doStaticLibraries
+          doSharedLibraries
+          doSharedExecutables
+        ] (addExtraLibraries (appendConfigureFlags
+          ((haskellPackages.callCabal2nix name (filter {
+            root = source;
+            exclude = (map matchName excludeFiles)
+              ++ (map matchExt excludeExtensions);
+          }) dependencies).overrideAttrs (old:
+            {
+              version = mkVersion "${old.version}";
+            } // (overrideAttrs old))) configureFlags) extraLibraries);
 
       overlays = { default = _: _: { inherit thenEndo manyEndo mkCabal; }; };
       lib = { inherit thenEndo manyEndo mkCabal; };
