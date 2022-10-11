@@ -22,20 +22,20 @@
 
       mkCabal = { packages, ghcVersion ? 924 }:
         { name, source, exclude ? [ ("Setup.hs") ("stack.yaml") ]
-        , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ] }:
-        let
-          haskellPackages =
-            packages.haskell.packages."ghc${toString ghcVersion}";
-        in with packages.lib;
+        , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ]
+        , haskellPackages ?
+          packages.haskell.packages."ghc${toString ghcVersion}" }:
+        with packages.lib;
         with packages.haskell.lib;
         with nix-filter.lib;
         addExtraLibraries (appendConfigureFlags (disableLibraryProfiling
           (disableStaticLibraries (enableSharedLibraries
-            (enableSharedExecutables (haskellPackages.callCabal2nix name
+            (enableSharedExecutables ((haskellPackages.callCabal2nix name
               (filter {
                 root = source;
                 inherit exclude;
-              }) dependencies))))) configureFlags) extraLibraries;
+              }) dependencies).overrideAttrs))))) configureFlags)
+        extraLibraries;
 
       overlays = { default = _: _: { inherit haskellSharedLibExe mkCabal; }; };
       lib = rec {
