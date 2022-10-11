@@ -21,8 +21,8 @@
         };
 
       mkCabal = { packages, ghcVersion ? 924 }:
-        { name, source, exclude ? [ ], dependencies ? { }, configureFlags ? [ ]
-        , extraLibraries ? [ ] }:
+        { name, source, exclude ? [ ("Setup.hs") ("stack.yaml") ]
+        , dependencies ? { }, configureFlags ? [ ], extraLibraries ? [ ] }:
         let
           haskellPackages =
             packages.haskell.packages."ghc${toString ghcVersion}";
