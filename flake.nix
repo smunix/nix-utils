@@ -1,6 +1,7 @@
 {
   description = "nix utils";
 
+  inputs.nixpkgs.url = "github:nixos/nixpkgs?ref=master";
   inputs.nix-filter.url = "github:numtide/nix-filter";
 
   outputs = { self, nixpkgs, nix-filter, ... }@inputs:
