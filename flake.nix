@@ -13,7 +13,7 @@
       mkCabal = { packages, ghcVersion ? 924, mkVersion ? (x: x) }:
         { name, source, excludeFiles ? [ ("Setup.hs") ("stack.yaml") ]
         , excludeExtensions ? [ ], dependencies ? { }, configureFlags ? [ ]
-        , extraLibraries ? [ ]
+        , extraLibraries ? [ ], doHaddock ? true
         , doLibraryProfiling ? packages.haskell.lib.disableLibraryProfiling
         , doSharedExecutables ? packages.haskell.lib.enableSharedExecutables
         , doSharedLibraries ? packages.haskell.lib.enableSharedLibraries
@@ -36,6 +36,7 @@
           }) dependencies).overrideAttrs (old:
             (overrideAttrs old) // {
               version = mkVersion "${old.version}";
+              inherit doHaddock;
             })) configureFlags) extraLibraries);
 
       overlays = { default = _: _: { inherit thenEndo manyEndo mkCabal; }; };
