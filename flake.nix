@@ -13,7 +13,7 @@
       mkCabal0 = { packages, ghcVersion ? 924, mkVersion ? (x: x) }:
         { name, source, excludeFiles ? [ ("Setup.hs") ("stack.yaml") ]
         , excludeExtensions ? [ ], dependencies ? { }, configureFlags ? [ ]
-        , extraLibraries ? [ ], doHaddock ? packages.haskell.lib.doHaddock
+        , extraLibraries ? [ ], doHaddock ? packages.haskell.lib.dontHaddock
         , doOptimization ? packages.haskell.lib.disableOptimization
         , doLibraryProfiling ? packages.haskell.lib.disableLibraryProfiling
         , doSharedExecutables ? packages.haskell.lib.enableSharedExecutables
