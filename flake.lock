@@ -2,11 +2,11 @@
   "nodes": {
     "nix-filter": {
       "locked": {
-        "lastModified": 1661201956,
-        "narHash": "sha256-RizGJH/buaw9A2+fiBf9WnXYw4LZABB5kMAZIEE5/T8=",
+        "lastModified": 1666547822,
+        "narHash": "sha256-razwnAybPHyoAyhkKCwXdxihIqJi1G6e1XP4FQOJTEs=",
         "owner": "numtide",
         "repo": "nix-filter",
-        "rev": "3b821578685d661a10b563cba30b1861eec05748",
+        "rev": "1a3b735e13e90a8d2fd5629f2f8363bd7ffbbec7",
         "type": "github"
       },
       "original": {
@@ -17,16 +17,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1665926212,
-        "narHash": "sha256-SQ9/rRfoed1/aiqfpi0hpl7PEykL4eM058nqzjHy7ng=",
+        "lastModified": 1674259967,
+        "narHash": "sha256-ssDQlqzwrhLFl6CWH+0qgYTmd+aWyiZV3C4Krk8gXTQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "29599f20c5db784bac0a980446eb0fe797429429",
+        "rev": "4684c03fe1819101e279127e8f1d14be9cdafec7",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "master",
+        "ref": "haskell-updates",
         "repo": "nixpkgs",
         "type": "github"
       }
